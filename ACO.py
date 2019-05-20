@@ -1,3 +1,7 @@
+import numpy as np
+# import random
+
+
 class Ant:
 
     def __init__(self, ID):
@@ -5,9 +9,9 @@ class Ant:
         self.ID = ID
         self.cost = 0.
 
-    def ref_trail(self, node):
+    def ref_trail(self, node, cost):
         self.road.append(node)
-        # self.cost += cost
+        self.cost += cost
 
     def clear(self):
         self.road = [self.ID]
@@ -23,9 +27,6 @@ class Lane:
     def ref_phero(self, phero):
         self.phero += phero
 
-
-import numpy as np
-# import random
 
 colony_size = 5
 
@@ -52,6 +53,7 @@ for i in range(5):
 
 # for key in lanes.keys():
 #   print(key, lanes[key].cost, lanes[key].phero)
+
 for k in range(10):
     while 1:
         try:
@@ -60,10 +62,10 @@ for k in range(10):
                 total = 0
                 prob = []
 
+                # Evaluate probability of remaining lanes
                 for node in range(colony_size):
                     if node not in ant.road:
                         prob.append([lanes[str(ant.road[-1]) + '-' + str(node)].phero/cost[ant.road[-1], node], node])
-                        # print(type(lanes[str(ant.road[-1]) + '-' + str(node)].phero))
                         total += lanes[str(ant.road[-1]) + '-' + str(node)].phero/cost[ant.road[-1], node]
                 for i in range(len(prob)):
                     if i > 0:
@@ -75,23 +77,31 @@ for k in range(10):
 
                 for i in prob:
                     if val <= i[0]:
-                        ant.ref_trail(i[1])
+                        ant.ref_trail(i[1], cost[ant.road[-1], i[1]])
                         break
                 else:
                     ant.ref_trail(prob[-1][1])
         except IndexError:
             break
 
+    print("\n\nRound #%d" % k)
+
+    for keys in lanes.keys():
+        print(keys, lanes[keys].phero)
+
     for lane in lanes.values():
         lane.ref_phero(-lane.phero*evap)
         # print(lane.phero)
 
     for ant in ants.values():
-        ant.ref_trail(ant.ID)
+        ant.ref_trail(ant.ID, cost[ant.road[-1], ant.ID])
         # print(ant.road)
         for i in range(len(ant.road) - 1):
             lanes[str(ant.road[i]) + '-' + str(ant.road[i+1])].ref_phero(delta)
             lanes[str(ant.road[i+1]) + '-' + str(ant.road[i])].ref_phero(delta)
+
+    for ant in ants.values():
+        print(ant.road, ant.cost)
 
     if k < 9:
         for ant in ants.values():
@@ -99,3 +109,6 @@ for k in range(10):
 
 for ant in ants.values():
     print(ant.road)
+
+for keys in lanes.keys():
+    print(keys, lanes[keys].phero)
