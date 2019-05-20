@@ -27,8 +27,20 @@ class Lane:
         self.phero += phero
 
 
-colony_size = 5
-n_nodes = 5
+# Cost matrix
+cost = np.array([[0., 1., 2.2, 2., 4.1],
+                 [1., 0., 1.4, 2.2, 4.],
+                 [2.2, 1.4, 0., 2.2, 3.2],
+                 [2., 2.2, 2.2, 0., 2.2],
+                 [4.1, 4., 3.2, 2.2, 0.]])
+
+# cost = np.array([[0., 10., 15., 20.],
+#                  [10., 0., 35., 25.],
+#                  [15., 35., 0., 30.],
+#                  [20., 25., 30., 0.]])
+
+colony_size = 10
+n_nodes = len(cost)
 
 max_gen = 100
 gen = 0
@@ -44,13 +56,6 @@ lanes = dict()
 # Create ants
 for ID in range(colony_size):
     ants[ID] = Ant(ID)
-
-# Cost matrix
-cost = np.array([[0., 1., 2.2, 2., 4.1],
-                 [1., 0., 1.4, 2.2, 4.],
-                 [2.2, 1.4, 0., 2.2, 3.2],
-                 [2., 2.2, 2.2, 0., 2.2],
-                 [4.1, 4., 3.2, 2.2, 0.]])
 
 # Create lanes (edges of graph)
 for i in range(n_nodes):
