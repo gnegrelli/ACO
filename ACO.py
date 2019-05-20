@@ -51,10 +51,12 @@ for i in range(5):
     for j in range(5):
         lanes[str(i) + '-' + str(j)] = Lane(cost[i, j])
 
-# for key in lanes.keys():
-#   print(key, lanes[key].cost, lanes[key].phero)
+for k in range(100):
 
-for k in range(10):
+    # Wipe ants
+    for ant in ants.values():
+        ant.clear()
+
     while 1:
         try:
             for ant in ants.values():
@@ -89,23 +91,21 @@ for k in range(10):
     for keys in lanes.keys():
         print(keys, lanes[keys].phero)
 
+    # Evaporate old pheromone from lanes
     for lane in lanes.values():
         lane.ref_phero(-lane.phero*evap)
-        # print(lane.phero)
 
     for ant in ants.values():
+        # Ants return to initial node
         ant.ref_trail(ant.ID, cost[ant.road[-1], ant.ID])
-        # print(ant.road)
+
+        # Update pheromone on lanes
         for i in range(len(ant.road) - 1):
-            lanes[str(ant.road[i]) + '-' + str(ant.road[i+1])].ref_phero(delta)
-            lanes[str(ant.road[i+1]) + '-' + str(ant.road[i])].ref_phero(delta)
+            lanes[str(ant.road[i]) + '-' + str(ant.road[i+1])].ref_phero(delta/ant.cost)
+            lanes[str(ant.road[i+1]) + '-' + str(ant.road[i])].ref_phero(delta/ant.cost)
 
     for ant in ants.values():
         print(ant.road, ant.cost)
-
-    if k < 9:
-        for ant in ants.values():
-            ant.clear()
 
 for ant in ants.values():
     print(ant.road)
