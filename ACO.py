@@ -30,6 +30,9 @@ class Lane:
 colony_size = 5
 n_nodes = 5
 
+max_gen = 100
+gen = 0
+
 evap = 0.2
 delta = 1.
 a = 1.
@@ -55,7 +58,7 @@ for i in range(n_nodes):
         lanes[str(i) + '-' + str(j)] = Lane(cost[i, j])
         lanes[str(j) + '-' + str(i)] = Lane(cost[i, j])
 
-for k in range(100):
+while gen < max_gen:
 
     # Start ants
     for ant in ants.values():
@@ -103,9 +106,11 @@ for k in range(100):
             lanes[str(ant.road[i]) + '-' + str(ant.road[i+1])].ref_phero(delta/ant.cost)
             lanes[str(ant.road[i+1]) + '-' + str(ant.road[i])].ref_phero(delta/ant.cost)
 
-    print("\n\nRound #%d" % k)
+    print("\n\nRound #%d" % gen)
     for ant in ants.values():
         print(ant.road, ant.cost)
+
+    gen += 1.
 
 print("\n")
 print(50*'\u2660')
