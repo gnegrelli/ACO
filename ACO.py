@@ -4,8 +4,8 @@ import numpy as np
 class Ant:
 
     def __init__(self, ID):
-        self.road = [ID]
         self.ID = ID
+        self.road = [ID]
         self.cost = 0.
 
     def ref_trail(self, node, cost):
@@ -28,6 +28,7 @@ class Lane:
 
 
 colony_size = 5
+n_nodes = 5
 
 evap = 0.2
 delta = 1.
@@ -39,6 +40,7 @@ lanes = dict()
 
 # Create ants
 for ID in range(colony_size):
+    print(np.random.randint(n_nodes))
     ants[ID] = Ant(ID)
 
 # Cost matrix
@@ -48,9 +50,11 @@ cost = np.array([[0., 1., 2.2, 2., 4.1],
                  [2., 2.2, 2.2, 0., 2.2],
                  [4.1, 4., 3.2, 2.2, 0.]])
 
-for i in range(5):
-    for j in range(5):
+# Create lanes (edges of graph)
+for i in range(n_nodes):
+    for j in range(i + 1, n_nodes):
         lanes[str(i) + '-' + str(j)] = Lane(cost[i, j])
+        lanes[str(j) + '-' + str(i)] = Lane(cost[i, j])
 
 for k in range(100):
 
@@ -83,7 +87,7 @@ for k in range(100):
                         ant.ref_trail(i[1], cost[ant.road[-1], i[1]])
                         break
                 else:
-                    ant.ref_trail(prob[-1][1])
+                    ant.ref_trail(prob[-1][1], cost[ant.road[-1], prob[-1][1]])
         except IndexError:
             break
 
