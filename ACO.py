@@ -69,7 +69,7 @@ for k in range(100):
                 prob = []
 
                 # Evaluate probability of remaining lanes
-                for node in range(colony_size):
+                for node in range(n_nodes):
                     if node not in ant.road:
                         prob.append([(lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(cost[ant.road[-1], node]**b), node])
                         total += (lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(cost[ant.road[-1], node]**b)
@@ -90,11 +90,6 @@ for k in range(100):
         except IndexError:
             break
 
-    print("\n\nRound #%d" % k)
-
-    # for keys in lanes.keys():
-    #     print(keys, lanes[keys].phero)
-
     # Evaporate old pheromone from lanes
     for lane in lanes.values():
         lane.ref_phero(-lane.phero*evap)
@@ -108,10 +103,13 @@ for k in range(100):
             lanes[str(ant.road[i]) + '-' + str(ant.road[i+1])].ref_phero(delta/ant.cost)
             lanes[str(ant.road[i+1]) + '-' + str(ant.road[i])].ref_phero(delta/ant.cost)
 
+    print("\n\nRound #%d" % k)
     for ant in ants.values():
         print(ant.road, ant.cost)
 
-print("\n\nFinal Solution:")
+print("\n")
+print(50*'\u2660')
+print("\nFinal Solution:")
 
 for ant in ants.values():
     print(ant.road)
