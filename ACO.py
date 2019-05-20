@@ -5,15 +5,15 @@ class Ant:
 
     def __init__(self, ID):
         self.ID = ID
-        self.road = [ID]
+        self.road = []
         self.cost = 0.
 
     def ref_trail(self, node, cost):
         self.road.append(node)
         self.cost += cost
 
-    def clear(self):
-        self.road = [self.ID]
+    def start(self, node):
+        self.road = [node]
         self.cost = 0.
 
 
@@ -40,7 +40,6 @@ lanes = dict()
 
 # Create ants
 for ID in range(colony_size):
-    print(np.random.randint(n_nodes))
     ants[ID] = Ant(ID)
 
 # Cost matrix
@@ -58,9 +57,9 @@ for i in range(n_nodes):
 
 for k in range(100):
 
-    # Wipe ants
+    # Start ants
     for ant in ants.values():
-        ant.clear()
+        ant.start(np.random.randint(n_nodes))
 
     while 1:
         try:
@@ -102,7 +101,7 @@ for k in range(100):
 
     for ant in ants.values():
         # Ants return to initial node
-        ant.ref_trail(ant.ID, cost[ant.road[-1], ant.ID])
+        ant.ref_trail(ant.road[0], cost[ant.road[-1], ant.road[0]])
 
         # Update pheromone on lanes
         for i in range(len(ant.road) - 1):
