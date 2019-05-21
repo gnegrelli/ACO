@@ -28,12 +28,6 @@ class Lane:
 
 
 # Cost matrix
-cost = np.array([[0., 1., 2.2, 2., 4.1],
-                 [1., 0., 1.4, 2.2, 4.],
-                 [2.2, 1.4, 0., 2.2, 3.2],
-                 [2., 2.2, 2.2, 0., 2.2],
-                 [4.1, 4., 3.2, 2.2, 0.]])
-
 # cost = np.array([[0., 10., 15., 20.],
 #                  [10., 0., 35., 25.],
 #                  [15., 35., 0., 30.],
@@ -62,7 +56,7 @@ lanes = dict()
 data = open('Cities1.txt').read().split("\n")
 n_nodes = int(data[0].strip())
 for row in data[1:]:
-    if row.strip():
+    if row.strip() and row[0] is not '#':
         i, j, d = row.split(",")
         lanes[i + '-' + j] = Lane(float(d))
         lanes[j + '-' + i] = Lane(float(d))
@@ -89,8 +83,14 @@ while gen < max_gen:
                 # Evaluate probability of remaining lanes
                 for node in range(n_nodes):
                     if node not in ant.road:
-                        prob.append([(lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b), node])
-                        total += (lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b)
+                        try:
+                            prob.append([(lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b), node])
+                            total += (lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b)
+                        except KeyError:
+                            lanes[str(ant.road[-1]) + '-' + str(node)] = Lane(9999)
+                            lanes[str(node) + '-' + str(ant.road[-1])] = Lane(9999)
+                            prob.append([(lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b), node])
+                            total += (lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b)
                 for i in range(len(prob)):
                     if i > 0:
                         prob[i][0] = prob[i][0]/total + prob[i-1][0]
