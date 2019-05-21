@@ -48,7 +48,7 @@ cost = np.array([[0., 1., 2.2, 2., 4.1],
 # Method configuration
 colony_size = 10
 
-max_gen = 100
+max_gen = 1000
 gen = 0
 
 evap = 0.2
@@ -89,8 +89,8 @@ while gen < max_gen:
                 # Evaluate probability of remaining lanes
                 for node in range(n_nodes):
                     if node not in ant.road:
-                        prob.append([(lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(cost[ant.road[-1], node]**b), node])
-                        total += (lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(cost[ant.road[-1], node]**b)
+                        prob.append([(lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b), node])
+                        total += (lanes[str(ant.road[-1]) + '-' + str(node)].phero**a)/(lanes[str(ant.road[-1]) + '-' + str(node)].cost**b)
                 for i in range(len(prob)):
                     if i > 0:
                         prob[i][0] = prob[i][0]/total + prob[i-1][0]
@@ -101,10 +101,10 @@ while gen < max_gen:
 
                 for i in prob:
                     if val <= i[0]:
-                        ant.ref_trail(i[1], cost[ant.road[-1], i[1]])
+                        ant.ref_trail(i[1], lanes[str(ant.road[-1]) + '-' + str(i[1])].cost)
                         break
                 else:
-                    ant.ref_trail(prob[-1][1], cost[ant.road[-1], prob[-1][1]])
+                    ant.ref_trail(prob[-1][1], lanes[str(ant.road[-1]) + '-' + str(prob[-1][1])].cost)
         except IndexError:
             break
 
@@ -114,7 +114,7 @@ while gen < max_gen:
 
     for ant in ants.values():
         # Ants return to initial node
-        ant.ref_trail(ant.road[0], cost[ant.road[-1], ant.road[0]])
+        ant.ref_trail(ant.road[0], lanes[str(ant.road[-1]) + '-' + str(ant.road[0])].cost)
 
         # Update pheromone on lanes
         for i in range(len(ant.road) - 1):
