@@ -45,8 +45,8 @@ cost = np.array([[0., 1., 2.2, 2., 4.1],
 #                  [12., 8., 3., 0., 10.],
 #                  [5., 9999., 3., 10., 0.]])
 
+# Method configuration
 colony_size = 10
-n_nodes = len(cost)
 
 max_gen = 100
 gen = 0
@@ -56,18 +56,20 @@ delta = 1.
 a = 1.
 b = 1.
 
-ants = dict()
+# Create lanes (edges of graph) reading file
 lanes = dict()
 
-# Create lanes (edges of graph) reading file
-data = open('a.txt').read().split("\n")
-for row in data:
+data = open('Cities1.txt').read().split("\n")
+n_nodes = int(data[0].strip())
+for row in data[1:]:
     if row.strip():
         i, j, d = row.split(",")
         lanes[i + '-' + j] = Lane(float(d))
         lanes[j + '-' + i] = Lane(float(d))
 
 # Create ants
+ants = dict()
+
 for ID in range(colony_size):
     ants[ID] = Ant(ID)
 
