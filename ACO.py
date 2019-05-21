@@ -59,15 +59,17 @@ b = 1.
 ants = dict()
 lanes = dict()
 
+# Create lanes (edges of graph) reading file
+data = open('a.txt').read().split("\n")
+for row in data:
+    if row.strip():
+        i, j, d = row.split(",")
+        lanes[i + '-' + j] = Lane(float(d))
+        lanes[j + '-' + i] = Lane(float(d))
+
 # Create ants
 for ID in range(colony_size):
     ants[ID] = Ant(ID)
-
-# Create lanes (edges of graph)
-for i in range(n_nodes):
-    for j in range(i + 1, n_nodes):
-        lanes[str(i) + '-' + str(j)] = Lane(cost[i, j])
-        lanes[str(j) + '-' + str(i)] = Lane(cost[i, j])
 
 while gen < max_gen:
 
