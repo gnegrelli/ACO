@@ -31,7 +31,7 @@ class Lane:
 # Method configuration
 colony_size = 10
 
-max_gen = 10
+max_gen = 200
 gen = 0
 
 evap = 0.2
@@ -118,6 +118,11 @@ while gen < max_gen:
         for i in range(len(ant.road) - 1):
             lanes[str(ant.road[i]) + '-' + str(ant.road[i+1])].ref_phero(delta/ant.cost)
             lanes[str(ant.road[i+1]) + '-' + str(ant.road[i])].ref_phero(delta/ant.cost)
+
+    # Update pheromone on lanes travelled by the best ant
+    for i in range(len(best_ant.road) - 1):
+        lanes[str(best_ant.road[i]) + '-' + str(best_ant.road[i + 1])].ref_phero(delta/best_ant.cost)
+        lanes[str(best_ant.road[i + 1]) + '-' + str(best_ant.road[i])].ref_phero(delta/best_ant.cost)
 
     print("\n\nRound #%d" % gen)
     for ant in ants.values():
