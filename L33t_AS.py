@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 
 class Ant:
@@ -30,7 +31,7 @@ class Lane:
 # Method configuration
 colony_size = 10
 
-max_gen = 1000
+max_gen = 10
 gen = 0
 
 evap = 0.2
@@ -96,6 +97,15 @@ while gen < max_gen:
         except IndexError:
             break
 
+    # Initialize best ant
+    if gen == 0:
+        best_ant = copy.copy(ants[0])
+
+    # Check if there is a better ant in this generation
+    for ant in ants.values():
+        if ant.cost < best_ant.cost:
+            best_ant = copy.copy(ant)
+
     # Evaporate old pheromone from lanes
     for lane in lanes.values():
         lane.ref_phero(-lane.phero*evap)
@@ -112,6 +122,9 @@ while gen < max_gen:
     print("\n\nRound #%d" % gen)
     for ant in ants.values():
         print(ant.road, ant.cost)
+
+    print("Best:")
+    print(best_ant.road)
 
     gen += 1.
 
