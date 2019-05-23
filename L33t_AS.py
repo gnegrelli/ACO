@@ -31,18 +31,18 @@ class Lane:
 # Method configuration
 colony_size = 10
 
-max_gen = 200
+max_gen = 1000
 gen = 0
 
 evap = 0.2
 delta = 1.
-a = 1.
+a = 1.4
 b = 1.
 
 # Create lanes (edges of graph) reading file
 lanes = dict()
 
-data = open('Cities1.txt').read().split("\n")
+data = open('Cities4.txt').read().split("\n")
 n_nodes = int(data[0].strip())
 for row in data[1:]:
     if row.strip() and row[0] is not '#':
@@ -97,15 +97,6 @@ while gen < max_gen:
         except IndexError:
             break
 
-    # Initialize best ant
-    if gen == 0:
-        best_ant = copy.copy(ants[0])
-
-    # Check if there is a better ant in this generation
-    for ant in ants.values():
-        if ant.cost < best_ant.cost:
-            best_ant = copy.copy(ant)
-
     # Evaporate old pheromone from lanes
     for lane in lanes.values():
         lane.ref_phero(-lane.phero*evap)
@@ -118,6 +109,15 @@ while gen < max_gen:
         for i in range(len(ant.road) - 1):
             lanes[str(ant.road[i]) + '-' + str(ant.road[i+1])].ref_phero(delta/ant.cost)
             lanes[str(ant.road[i+1]) + '-' + str(ant.road[i])].ref_phero(delta/ant.cost)
+
+    # Initialize best ant
+    if gen == 0:
+        best_ant = copy.copy(ants[0])
+
+    # Check if there is a better ant in this generation
+    for ant in ants.values():
+        if ant.cost < best_ant.cost:
+            best_ant = copy.copy(ant)
 
     # Update pheromone on lanes travelled by the best ant
     for i in range(len(best_ant.road) - 1):
@@ -138,4 +138,4 @@ print(50*'\u2660')
 print("\nFinal Solution:")
 
 for ant in ants.values():
-    print(ant.road)
+    print("Ant #%d: \t%s -> %.2f" % (ant.ID, ant.road, ant.cost))
