@@ -29,20 +29,20 @@ class Lane:
 
 
 # Method configuration
-colony_size = 10
+colony_size = 100
 
 max_gen = 1000
 gen = 0
 
-evap = 0.2
+evap = 0.1
 delta = 1.
-a = 1.4
-b = 1.
+a = 2
+b = 3.
 
 # Create lanes (edges of graph) reading file
 lanes = dict()
 
-data = open('Cities4.txt').read().split("\n")
+data = open('Cities5.txt').read().split("\n")
 n_nodes = int(data[0].strip())
 for row in data[1:]:
     if row.strip() and row[0] is not '#':
@@ -121,21 +121,22 @@ while gen < max_gen:
 
     # Update pheromone on lanes travelled by the best ant
     for i in range(len(best_ant.road) - 1):
-        lanes[str(best_ant.road[i]) + '-' + str(best_ant.road[i + 1])].ref_phero(delta/best_ant.cost)
-        lanes[str(best_ant.road[i + 1]) + '-' + str(best_ant.road[i])].ref_phero(delta/best_ant.cost)
+        lanes[str(best_ant.road[i]) + '-' + str(best_ant.road[i + 1])].ref_phero(5*delta/best_ant.cost)
+        lanes[str(best_ant.road[i + 1]) + '-' + str(best_ant.road[i])].ref_phero(5*delta/best_ant.cost)
 
-    print("\n\nRound #%d" % gen)
-    for ant in ants.values():
-        print(ant.road, ant.cost)
+    # print("\n\nRound #%d" % gen)
+    # for ant in ants.values():
+    #     print(ant.road, ant.cost)
 
-    print("Best:")
-    print(best_ant.road)
+    # print("Best:")
+    # print(best_ant.road)
 
     gen += 1.
 
-print("\n")
-print(50*'\u2660')
-print("\nFinal Solution:")
+# print("\n")
+# print(50*'\u2660')
+# print("\nFinal Solution:")
 
-for ant in ants.values():
-    print("Ant #%d: \t%s -> %.2f" % (ant.ID, ant.road, ant.cost))
+# for ant in ants.values():
+#     print("Ant #%d: \t%s -> %.2f" % (ant.ID, ant.road, ant.cost))
+print("%s, %.4f" % (best_ant.road, best_ant.cost))
